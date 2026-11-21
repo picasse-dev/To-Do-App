@@ -1,0 +1,25 @@
+{
+  "activities": [
+    {
+      "id": "1",
+      "task": "React",
+      "done": true
+    },
+    {
+      "id": "2",
+      "task": "Exercise",
+      "done": true
+    },
+    {
+      "id": "3",
+      "task": "Food",
+      "done": true
+    },
+    {
+      "task": "Oficio",
+      "done": false,
+      "id": "KS6GLcwUjXY"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
