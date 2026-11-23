@@ -2,20 +2,26 @@ import { useState, useEffect } from 'react'
 import activitiesService from './services/activities'
 import TaskCreator from './components/TaskCreator'
 import ActivityTable from './components/ActivityTable'
+import NotificationError from './components/NotificationError'
 
 const App = () => {
   const [activities, setActivities] = useState([])
   const [newTask, setNewTask] = useState('')
   const [editingActivityId, setEditingActivityId] = useState(null)
   const [editedTask, setEditedTask] = useState('')
+  const [msgError, setMsgError] = useState(null)
+
+  const showError = (msgError) => {
+    setMsgError(msgError)
+    setTimeout(() => { setMsgError(null) }, 3000)
+  }
 
   useEffect(() => {
     activitiesService
       .getAll()
       .then(initialActivities => 
         setActivities(initialActivities))
-      .catch(error => (console.log("Error recibiendo la data"))
-      )
+      .catch(error => (showError(`Error network or the server is not responding`)))
   }, [])
 
   const handleNewTaskChange = (event) => { setNewTask(event.target.value) }
@@ -37,6 +43,7 @@ const App = () => {
         setActivities(prev => [...prev, returnedActivity])
         setNewTask('')
       })
+      .catch(error => (showError(`Error creating task`)))
   }
 
   const toggleActivityDone = (id) => {
@@ -58,6 +65,7 @@ const App = () => {
           )
         )
       })
+      .catch(error => (showError(`Error at mark task done/undone`)))
   }
 
   const handleDeleteActivity = (id) => {
@@ -68,6 +76,7 @@ const App = () => {
           prev.filter(activity => activity.id !== id)
         )
       })
+      .catch(error => (console.log(error),showError(`Error deleting task`)))
   }
 
   const handleEditActivity = (id) => {
@@ -90,10 +99,11 @@ const App = () => {
             activity.id === id ? returnedActivity : activity
           )
         )
-
+        
         setEditedTask('')
         setEditingActivityId(null)
       })
+      .catch(error => (showError(`Error editing task`)))
   }
 
   const handleCancelEdit = () => {
@@ -123,6 +133,9 @@ const App = () => {
         handleCancelEdit = {handleCancelEdit}
         handleDeleteActivity = {handleDeleteActivity}
         handleEditActivity = {handleEditActivity}
+      />
+      <NotificationError
+        msgError = {msgError}
       />
     </>
   )

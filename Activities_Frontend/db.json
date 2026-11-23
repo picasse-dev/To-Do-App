@@ -1,5 +1,5 @@
 {
-  "activities": [
+  "tasks": [
     {
       "id": "1",
       "task": "React",
@@ -19,6 +19,11 @@
       "task": "Oficio",
       "done": false,
       "id": "KS6GLcwUjXY"
+    },
+    {
+      "task": "c",
+      "done": false,
+      "id": "IaYwshyAqEE"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

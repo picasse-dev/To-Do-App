@@ -1,0 +1,232 @@
+@baseUrl = http://localhost:3002/api/tasks
+
+################################################################
+# GET
+################################################################
+
+### GET all -> 200
+GET {{baseUrl}}
+
+### GET one existente -> 200
+GET {{baseUrl}}/1
+
+### GET one inexistente -> 404
+GET {{baseUrl}}/9999
+
+################################################################
+# POST
+################################################################
+
+### POST valido (con done) -> 201 + header Location
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "task": "Learn REST methods",
+  "done": false
+}
+
+### POST valido (sin done, queda en false) -> 201
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "task": "Task without done field"
+}
+
+### POST tarea duplicada (existe en los datos iniciales) -> 409
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "task": "HTML is easy",
+  "done": false
+}
+
+### POST duplicada con otras mayusculas y espacios -> 409
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "task": "  html IS easy  ",
+  "done": true
+}
+
+### POST sin task -> 400
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "done": true
+}
+
+### POST task vacio (solo espacios) -> 400
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "task": "   ",
+  "done": false
+}
+
+### POST task con tipo incorrecto -> 400
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "task": 123,
+  "done": false
+}
+
+### POST done con tipo incorrecto -> 400
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "task": "Valid task",
+  "done": "yes"
+}
+
+### POST varios errores a la vez -> 400 con varios details
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "task": "",
+  "done": "no"
+}
+
+### POST sin body -> 400
+POST {{baseUrl}}
+Content-Type: application/json
+
+### POST body no es un objeto (array) -> 400
+POST {{baseUrl}}
+Content-Type: application/json
+
+[]
+
+### POST JSON mal formado -> 400 Malformed JSON
+POST {{baseUrl}}
+Content-Type: application/json
+
+{ "task": "broken json", "done": }
+
+### POST intentando enviar id propio (debe ignorarse) -> 201 con id generado
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "id": "999",
+  "task": "I cannot choose my id",
+  "done": true
+}
+
+################################################################
+# PUT (reemplazo completo: task y done obligatorios)
+################################################################
+
+### PUT valido -> 200
+PUT {{baseUrl}}/1
+Content-Type: application/json
+
+{
+  "task": "HTML is easy (updated)",
+  "done": false
+}
+
+### PUT sin done -> 400
+PUT {{baseUrl}}/1
+Content-Type: application/json
+
+{
+  "task": "Missing done"
+}
+
+### PUT sin task -> 400
+PUT {{baseUrl}}/1
+Content-Type: application/json
+
+{
+  "done": true
+}
+
+### PUT id inexistente -> 404
+PUT {{baseUrl}}/9999
+Content-Type: application/json
+
+{
+  "task": "Does not exist",
+  "done": true
+}
+
+################################################################
+# PATCH (actualizacion parcial)
+################################################################
+
+### PATCH solo done -> 200
+PATCH {{baseUrl}}/2
+Content-Type: application/json
+
+{
+  "done": true
+}
+
+### PATCH solo task -> 200
+PATCH {{baseUrl}}/2
+Content-Type: application/json
+
+{
+  "task": "Browser can execute only JavaScript (patched)"
+}
+
+### PATCH ambos campos -> 200
+PATCH {{baseUrl}}/2
+Content-Type: application/json
+
+{
+  "task": "Patched both fields",
+  "done": false
+}
+
+### PATCH body vacio -> 400
+PATCH {{baseUrl}}/2
+Content-Type: application/json
+
+{}
+
+### PATCH done con tipo incorrecto -> 400
+PATCH {{baseUrl}}/2
+Content-Type: application/json
+
+{
+  "done": "true"
+}
+
+### PATCH id inexistente -> 404
+PATCH {{baseUrl}}/9999
+Content-Type: application/json
+
+{
+  "done": true
+}
+
+################################################################
+# DELETE
+################################################################
+
+### DELETE existente -> 204 sin cuerpo
+DELETE {{baseUrl}}/4
+
+### DELETE el mismo id otra vez -> 404
+DELETE {{baseUrl}}/4
+
+### DELETE inexistente -> 404
+DELETE {{baseUrl}}/9999
+
+################################################################
+# ENDPOINT DESCONOCIDO
+################################################################
+
+### Ruta que no existe -> 404 Unknown endpoint
+GET http://localhost:3001/api/unknown
