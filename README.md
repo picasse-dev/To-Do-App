@@ -1,123 +1,240 @@
 # To-Do App
 
-A full-stack To-Do application built to practice and strengthen my skills in frontend and backend development. The application allows users to create, edit, delete, and manage tasks through a React interface connected to a REST API.
+A full-stack To-Do application built with **React** and **Node.js/Express**. It allows users to create, view, edit, complete, and delete tasks through a React interface connected to a REST API.
+
+The frontend is served by the Express backend in production, while Vite provides the frontend development server locally.
+
+> **Live demo:** [https://to-do-app-5fej.onrender.com/](https://to-do-app-5fej.onrender.com/)
+>
+> The frontend and backend are served together by the deployed application.
+
+## Features
+
+### Task management
+- [x] Display all tasks.
+- [x] Create tasks.
+- [x] Edit task descriptions.
+- [x] Mark tasks as completed or pending.
+- [x] Delete tasks.
+- [x] Prevent empty task descriptions in the frontend and backend.
+- [x] Prevent duplicate task descriptions (case-insensitive).
+
+### Backend and API
+- [x] REST API built with Express.
+- [x] Retrieve all tasks or a single task.
+- [x] Create, replace, partially update, and delete tasks.
+- [x] Validate request bodies and field types.
+- [x] Return appropriate HTTP status codes.
+- [x] Handle malformed JSON and unknown endpoints.
+- [x] Serve the production frontend build as static files.
+- [x] Log incoming request method, path, and body.
+
+### Frontend
+- [x] React components split by responsibility.
+- [x] Axios service module for API communication.
+- [x] Display an error notification when API operations fail.
+
+## Tech Stack
+
+### Frontend
+- **React 19** – Component-based user interface.
+- **Vite** – Development server and production build tool.
+- **Axios** – HTTP client for REST API requests.
+- **JavaScript (ES modules)** – Application logic and state management.
+- **CSS** – Basic application styling.
+
+### Backend
+- **Node.js** – JavaScript runtime.
+- **Express 5** – HTTP server and REST API.
+- **CommonJS** – Backend module system.
 
 ## Project Structure
-
-The project is organized into two independent applications:
 
 ```text
 To-Do-App/
 ├── Activities_Frontend/
 │   ├── src/
 │   │   ├── components/
+│   │   │   ├── ActivityRow.jsx
+│   │   │   ├── ActivityTable.jsx
+│   │   │   ├── NotificationError.jsx
+│   │   │   └── TaskCreator.jsx
 │   │   ├── services/
-│   │   └── App.jsx
+│   │   │   └── activities.js
+│   │   ├── App.jsx
+│   │   └── index.css
+│   ├── vite.config.js
 │   └── package.json
 │
 ├── Activities_Backend/
 │   ├── index.js
+│   ├── test.rest
 │   └── package.json
 │
 └── README.md
 ```
 
-## Technologies
-
-### Frontend
-- **React** – Component-based user interface.
-- **Vite** – Development environment and build tool.
-- **Axios** – HTTP requests and communication with the backend.
-- **JavaScript (ES6+)** – Application logic and state management.
-
-### Backend
-- **Node.js** – JavaScript runtime environment.
-- **Express** – Backend framework for building the REST API.
-- **REST API** – HTTP endpoints for managing activities.
-
-## Features
-
-Currently implemented or under development:
-
-- [x] Display existing activities.
-- [x] Create new activities.
-- [x] Mark activities as completed or pending.
-- [x] Edit existing activities.
-- [x] Delete activities.
-- [x] Separate frontend components.
-- [x] Extract API communication into a dedicated service module.
-- [ ] Persistent database integration.
-- [ ] Improved error handling and notifications.
-- [ ] Application deployment.
-
 ## Getting Started
 
 ### Prerequisites
 
-Make sure you have installed:
+- [Node.js](https://nodejs.org/) (with npm)
+- Git
+- An editor with REST Client support (optional, for running `test.rest` requests)
 
-- Node.js
-- npm
-
-### Installation
-
-Clone the repository:
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/picasse-dev/To-Do-App.git
 cd To-Do-App
 ```
 
-### Run the Backend
+### 2. Install dependencies
+
+Install backend dependencies:
 
 ```bash
 cd Activities_Backend
 npm install
-npm start
 ```
 
-The backend is configured to run on:
-
-```text
-http://localhost:3002
-```
-
-### Run the Frontend
-
-Open another terminal:
+Install frontend dependencies in a second terminal:
 
 ```bash
 cd Activities_Frontend
 npm install
+```
+
+### 3. Run the application locally
+
+Start the backend:
+
+```bash
+cd Activities_Backend
 npm run dev
 ```
 
-Vite will provide a local development URL in your terminal.
+The backend listens on `http://localhost:3002` by default. It uses the `PORT` environment variable when one is provided.
 
-## API Endpoints
+Start the Vite development server in another terminal:
 
-The backend currently defines the following endpoints:
+```bash
+cd Activities_Frontend
+npm run dev
+```
 
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/api/activities` | Retrieve all activities |
-| POST | `/api/activities` | Create a new activity |
-| PUT | `/api/activities/:id` | Update an activity |
+Open the local URL printed by Vite in your terminal. During development, Vite proxies requests from `/api` to `http://localhost:3002`.
 
-## Project Goals
+## Production Build
 
-This project is part of my ongoing learning process in full-stack software development.
+The backend package includes a script that builds the React frontend and copies its `dist` directory into the backend folder:
 
-The main objectives are to:
+```bash
+cd Activities_Backend
+npm run build:ui
+```
 
-- Understand React components, props, and state management.
-- Work with React Hooks such as `useState` and `useEffect`.
-- Implement CRUD operations.
-- Understand HTTP methods and REST API architecture.
-- Connect a React frontend to a Node.js backend.
-- Practice modularization and separation of concerns.
-- Eventually integrate a database and deploy the application.
+Express is configured to serve the files in the backend's `dist` directory. Start the backend to serve the built frontend and API from the same origin:
 
-## Current Status
+```bash
+npm start
+```
 
-This project is actively under development. New features, improvements, and backend functionalities will be added as I continue learning and expanding the application.
+The `deploy:full` script runs the frontend build, stages all Git changes, creates a commit named `deploy`, and pushes to the configured remote:
+
+```bash
+npm run deploy:full
+```
+
+Make sure your Git remote and deployment provider are configured before using this script. The script pushes code; the actual deployment behavior depends on the hosting provider connected to the repository.
+
+## REST API
+
+All API routes use the `/api/tasks` base path.
+
+| Method | Endpoint | Description | Success |
+|---|---|---|---|
+| `GET` | `/api/tasks` | Retrieve all tasks | `200 OK` |
+| `GET` | `/api/tasks/:id` | Retrieve one task | `200 OK` |
+| `POST` | `/api/tasks` | Create a task | `201 Created` |
+| `PUT` | `/api/tasks/:id` | Replace a task (both fields required) | `200 OK` |
+| `PATCH` | `/api/tasks/:id` | Partially update a task | `200 OK` |
+| `DELETE` | `/api/tasks/:id` | Delete a task | `204 No Content` |
+
+### Task data format
+
+```json
+{
+  "id": "1",
+  "task": "Learn Express",
+  "done": false
+}
+```
+
+The `id` is generated by the backend. When creating a task, send `task`; `done` is optional and defaults to `false`.
+
+### Validation and error responses
+
+The API validates that:
+- The request body is a JSON object.
+- `task`, when provided, is a non-empty string.
+- `done`, when provided, is a boolean.
+- `POST` requires `task`.
+- `PUT` requires both `task` and `done`.
+- `PATCH` requires at least one of `task` or `done`.
+- A task with the same description (case-insensitive) cannot be created twice.
+
+| Status | Meaning |
+|---|---|
+| `400 Bad Request` | Invalid request data or malformed JSON |
+| `404 Not Found` | Task ID or endpoint does not exist |
+| `409 Conflict` | A task with the same description already exists |
+| `500 Internal Server Error` | Unexpected server error |
+
+Example validation response:
+
+```json
+{
+  "error": "Validation failed",
+  "details": [
+    "\"task\" must be a non-empty string"
+  ]
+}
+```
+
+## Testing the API
+
+The `Activities_Backend/test.rest` file contains manual HTTP requests for the API, including successful requests and error cases.
+
+1. Start the backend locally.
+2. Open `Activities_Backend/test.rest` in Visual Studio Code with the REST Client extension installed.
+3. Run the requests using the **Send Request** action above each request.
+
+The `test` script in `package.json` is currently a placeholder; the `.rest` file is a manual API test collection, not an automated test suite.
+
+## Current Limitations
+
+- **In-memory storage:** tasks are stored in a JavaScript array on the server. They are reset when the backend restarts, and they are not shared through a persistent database.
+- **Basic frontend error feedback:** the UI displays a temporary generic error notification. More specific API error messages, loading states, success notifications, and retry behavior could improve the experience.
+- **No automated test suite:** API scenarios are currently documented as manual REST Client requests.
+
+## Possible Improvements
+
+- [ ] Integrate a persistent database.
+- [ ] Add automated backend and frontend tests.
+- [ ] Display more specific error messages returned by the API.
+- [ ] Add loading and success states.
+- [ ] Improve accessibility and responsive styling.
+- [ ] Add task filtering (all, pending, completed).
+
+## Learning Goals
+
+This project is part of my ongoing practice in full-stack development. It helps me work with:
+
+- React components, props, state, and hooks (`useState` and `useEffect`).
+- CRUD operations and HTTP methods.
+- REST API design and request validation.
+- Error handling in both frontend and backend.
+- Axios and communication between frontend and backend.
+- Modularization and separation of concerns.
+- Building and serving a frontend application through an Express backend.
