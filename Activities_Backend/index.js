@@ -16,10 +16,10 @@ app.use(express.static('dist'))
 
 // ---------- DATA ----------
 let tasks = [
-  { id: '1', task: 'Salir a trotar', done: true },
+  { id: '1', task: 'Salir a trotar', done: false },
   { id: '2', task: 'Meditar', done: false },
   { id: '3', task: 'Estudiar', done: true },
-  { id: '4', task: 'Encontrar la forma de hacer mucho dinero', done: true },
+  { id: '4', task: 'Encontrar la forma de hacer mucho dinero', done: false },
   { id: '5', task: 'Respirar', done: true },
   { id: '6', task: 'Cuidar la espalda', done: true },
   { id: '7', task: 'Aprender algo nuevo', done: true }
