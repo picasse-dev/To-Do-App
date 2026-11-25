@@ -16,10 +16,13 @@ app.use(express.static('dist'))
 
 // ---------- DATA ----------
 let tasks = [
-  { id: '1', task: 'React', done: true },
-  { id: '2', task: 'Node', done: false },
-  { id: '3', task: 'Rest Client', done: true },
-  { id: '4', task: 'Dist static files script', done: true }
+  { id: '1', task: 'Salir a trotar', done: true },
+  { id: '2', task: 'Meditar', done: false },
+  { id: '3', task: 'Estudiar', done: true },
+  { id: '4', task: 'Encontrar la forma de hacer mucho dinero', done: true },
+  { id: '5', task: 'Respirar', done: true },
+  { id: '6', task: 'Cuidar la espalda', done: true },
+  { id: '7', task: 'Aprender algo nuevo', done: true }
 ]
 
 // ---------- HELPERS ----------
